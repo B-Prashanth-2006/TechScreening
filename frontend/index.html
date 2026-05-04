@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TechScreening - Interview Demo</title>
+</head>
+<body>
+<style>
+:root{
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-background: #eff4ff;
+  --color-surface: #ffffff;
+  --color-surface-soft: rgba(255,255,255,0.86);
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-tertiary: rgba(15, 23, 42, 0.12);
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-muted: #6b7280;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --border-radius-lg: 28px;
+  --border-radius-md: 18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--font-sans);background:radial-gradient(circle at top left, rgba(91,107,255,0.12), transparent 28%), radial-gradient(circle at bottom right, rgba(94,234,212,0.16), transparent 26%), #eef4ff;color:var(--color-text-primary);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;letter-spacing:0.01em}
+body{padding:1.4rem 1.6rem 1.6rem}
+.ts{min-height:520px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--border-radius-lg);overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 120px rgba(15,23,42,0.08)}
+.ts-nav{display:flex;align-items:center;padding:0 1.5rem;height:60px;border-bottom:1px solid var(--color-border-tertiary);gap:1rem;flex-shrink:0}
+.ts-logo{font-family:var(--font-mono);font-size:15px;font-weight:800;color:var(--color-text-primary);display:flex;align-items:center;gap:10px}
+.ts-logo-sq{width:20px;height:20px;background:#5b6bff;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ts-logo-sq svg{width:10px;height:10px;color:#fff}
+.ts-steps{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:11px;font-family:var(--font-mono)}
+.ts-step{padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-tertiary);cursor:default}
+.ts-step.active{background:#5b6bff;color:#fff;border-color:#5b6bff}
+.ts-step.done{color:#5b6bff;border-color:#5b6bff}
+.ts-body{flex:1;overflow:auto}
+.screen{display:none;padding:2rem 2.5rem;height:100%;flex-direction:column}
+.screen.active{display:flex}
+.screen-title{font-size:24px;font-weight:800;color:var(--color-text-primary);margin-bottom:.5rem}
+.screen-sub{font-size:15px;color:var(--color-text-secondary);margin-bottom:1.75rem;line-height:1.75}
+.lang-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:1.75rem}
+.lang-card{border:1px solid var(--color-border-tertiary);border-radius:calc(var(--border-radius-md) + 2px);padding:20px;cursor:pointer;transition:border-color .15s,background .15s,transform .15s;background:var(--color-background-primary);box-shadow:0 18px 40px rgba(15,23,42,0.05)}
+.lang-card:hover{background:var(--color-background-secondary)}
+.lang-card.sel{border:1.5px solid #5b6bff;background:rgba(91,107,255,0.05)}
+.lang-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;font-size:12px;font-weight:500;font-family:var(--font-mono)}
+.lang-icon.py{background:#e8f4fd;color:#1a7bbf}
+.lang-icon.jv{background:#fff3e0;color:#e65100}
+.lang-icon.cp{background:#f3e5f5;color:#6a1b9a}
+.lang-icon.c{background:#e8f5e9;color:#2e7d32}
+.lang-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.lang-qs{font-size:11px;color:var(--color-text-secondary)}
+.lang-concepts{margin-top:6px;display:flex;flex-wrap:wrap;gap:4px}
+.concept-pill{font-size:9px;padding:2px 6px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);font-family:var(--font-mono)}
+.btn-primary{background:#4f46e5;color:#fff;border:none;border-radius:calc(var(--border-radius-md) + 2px);padding:12px 24px;font-size:15px;font-weight:700;font-family:var(--font-sans);cursor:pointer;transition:transform .15s,opacity .15s;box-shadow:0 12px 30px rgba(79,70,229,0.16)}
+.btn-primary:hover{opacity:.92;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{background:transparent;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:9px 20px;font-size:13px;font-family:var(--font-sans);cursor:pointer;transition:background .15s}
+.btn-ghost:hover{background:var(--color-background-secondary)}
+.btn-row{display:flex;gap:10px;margin-top:auto;padding-top:1.5rem}
+.upload-zone{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:2rem;text-align:center;cursor:pointer;transition:background .15s;margin-bottom:1rem}
+.upload-zone:hover,.upload-zone.has-file{background:var(--color-background-secondary)}
+.upload-zone.dragover{background:rgba(91,107,255,0.08);border-color:#5b6bff}
+.upload-icon{width:36px;height:36px;border-radius:50%;background:rgba(91,107,255,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.upload-icon svg{width:16px;height:16px;color:#5b6bff}
+.upload-text{font-size:13px;color:var(--color-text-secondary)}
+.upload-text strong{color:var(--color-text-primary);font-weight:500}
+.upload-hint{font-size:11px;color:var(--color-text-tertiary);margin-top:4px}
+.upload-success{display:flex;align-items:center;gap:10px;background:rgba(91,107,255,0.06);border:0.5px solid rgba(91,107,255,0.3);border-radius:var(--border-radius-md);padding:10px 14px;margin-bottom:1rem}
+.upload-success svg{width:16px;height:16px;color:#5b6bff;flex-shrink:0}
+.upload-success span{font-size:13px;color:var(--color-text-primary)}
+.perm-row{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem}
+.perm-item{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary)}
+.perm-left{display:flex;align-items:center;gap:12px}
+.perm-icon{width:30px;height:30px;border-radius:var(--border-radius-md);background:rgba(91,107,255,0.08);display:flex;align-items:center;justify-content:center}
+.perm-icon svg{width:14px;height:14px;color:#5b6bff}
+.perm-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.perm-desc{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.perm-btn{font-size:11px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-family:var(--font-sans);color:var(--color-text-secondary);transition:all .15s}
+.perm-btn.granted{background:rgba(91,107,255,0.08);color:#5b6bff;border-color:rgba(91,107,255,0.3)}
+.iv-layout{display:grid;grid-template-columns:1fr 240px;gap:1.25rem;flex:1;min-height:0}
+.iv-main{display:flex;flex-direction:column;gap:1rem;min-height:0}
+.iv-top-bar{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.iv-lang-badge{font-size:11px;font-family:var(--font-mono);padding:3px 10px;border-radius:20px;background:rgba(91,107,255,0.1);color:#5b6bff;border:0.5px solid rgba(91,107,255,0.25)}
+.iv-timer{font-family:var(--font-mono);font-size:13px;color:var(--color-text-secondary);margin-left:auto;display:flex;align-items:center;gap:5px}
+.iv-timer-dot{width:6px;height:6px;border-radius:50%;background:#e24b4a;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.q-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem 1.25rem;flex-shrink:0}
+.q-label{font-size:10px;font-family:var(--font-mono);color:var(--color-text-tertiary);letter-spacing:.06em;margin-bottom:6px;text-transform:uppercase}
+.q-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px}
+.q-prompt{font-size:12px;color:var(--color-text-secondary);line-height:1.65;white-space:pre-line;font-family:var(--font-mono)}
+.concepts-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.code-area{flex:1;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;font-family:var(--font-mono);font-size:12px;color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);resize:none;min-height:100px;line-height:1.6}
+.code-area:focus{outline:none;border-color:#5b6bff}
+.iv-sidebar{display:flex;flex-direction:column;gap:10px}
+.ai-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;flex-shrink:0}
+.ai-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ai-avatar{width:26px;height:26px;border-radius:50%;background:#5b6bff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-avatar svg{width:13px;height:13px;color:#fff}
+.ai-name{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.ai-status{font-size:10px;color:var(--color-text-tertiary)}
+.ai-bubble{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px;font-size:12px;color:var(--color-text-secondary);line-height:1.6;min-height:60px}
+.typing span{display:inline-block;width:5px;height:5px;border-radius:50%;background:#5b6bff;animation:bounce .9s ease-in-out infinite;margin:0 1px}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.mic-panel{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;display:flex;flex-direction:column;align-items:center;gap:8px;flex-shrink:0}
+.mic-wrap{position:relative;width:48px;height:48px;display:flex;align-items:center;justify-content:center}
+.mic-ring{position:absolute;border-radius:50%;border:1.5px solid rgba(91,107,255,0.25);animation:rp 2.4s ease-out infinite}
+.mic-ring:nth-child(1){width:48px;height:48px;animation-delay:0s}
+.mic-ring:nth-child(2){width:62px;height:62px;animation-delay:.7s}
+@keyframes rp{0%{opacity:.5;transform:scale(.85)}100%{opacity:0;transform:scale(1.2)}}
+.mic-btn{width:36px;height:36px;border-radius:50%;background:#5b6bff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;z-index:2}
+.mic-btn svg{width:15px;height:15px;color:#fff}
+.mic-status{font-size:10px;font-family:var(--font-mono);color:var(--color-text-tertiary);letter-spacing:.08em}
+.submit-row{display:flex;gap:8px;flex-shrink:0}
+.progress-bar{height:3px;background:var(--color-border-tertiary);border-radius:2px;flex-shrink:0}
+.progress-fill{height:100%;background:#5b6bff;border-radius:2px;transition:width .4s}
+.feedback-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1.25rem;margin-bottom:1rem}
+.fb-score{font-size:36px;font-weight:500;color:#5b6bff;margin-bottom:4px}
+.fb-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:1rem}
+.fb-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
+.fb-stat{background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:10px 12px}
+.fb-stat-val{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.fb-stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.tip-item{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:8px}
+.tip-dot{width:5px;height:5px;border-radius:50%;background:#5b6bff;flex-shrink:0;margin-top:5px}
+</style>
+
+<div class="ts">
+  <nav class="ts-nav">
+    <div class="ts-logo">
+      <div class="ts-logo-sq"><svg viewBox="0 0 10 10" fill="none"><path d="M1 2.5h8M1 5h5M1 7.5h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      TechScreening
+    </div>
+    <div class="ts-steps">
+      <div class="ts-step active" id="step-1">1. Language</div>
+      <div class="ts-step" id="step-2">2. Resume</div>
+      <div class="ts-step" id="step-3">3. Setup</div>
+      <div class="ts-step" id="step-4">4. Interview</div>
+    </div>
+  </nav>
+
+  <div class="ts-body">
+
+    <!-- SCREEN 1: Language -->
+    <div class="screen active" id="screen-lang">
+      <div class="screen-title">Choose your language</div>
+      <div class="screen-sub">Select the programming language for your interview. Questions will be tailored to your choice.</div>
+      <div class="lang-grid">
+        <div class="lang-card" onclick="selectLang('python',this)">
+          <div class="lang-icon py">Py</div>
+          <div class="lang-name">Python</div>
+          <div class="lang-qs">1 question</div>
+          <div class="lang-concepts"><span class="concept-pill">dict</span><span class="concept-pill">O(n)</span><span class="concept-pill">strings</span></div>
+        </div>
+        <div class="lang-card" onclick="selectLang('java',this)">
+          <div class="lang-icon jv">Jv</div>
+          <div class="lang-name">Java</div>
+          <div class="lang-qs">1 question</div>
+          <div class="lang-concepts"><span class="concept-pill">Stack</span><span class="concept-pill">Deque</span><span class="concept-pill">OOP</span></div>
+        </div>
+        <div class="lang-card" onclick="selectLang('cpp',this)">
+          <div class="lang-icon cp">C++</div>
+          <div class="lang-name">C++</div>
+          <div class="lang-qs">1 question</div>
+          <div class="lang-concepts"><span class="concept-pill">map</span><span class="concept-pill">heap</span><span class="concept-pill">algo</span></div>
+        </div>
+        <div class="lang-card" onclick="selectLang('c',this)">
+          <div class="lang-icon c">C</div>
+          <div class="lang-name">C</div>
+          <div class="lang-qs">1 question</div>
+          <div class="lang-concepts"><span class="concept-pill">pointers</span><span class="concept-pill">null</span><span class="concept-pill">edge</span></div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="lang-next" disabled onclick="goTo('resume')">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: Resume -->
+    <div class="screen" id="screen-resume">
+      <div class="screen-title">Upload your resume</div>
+      <div class="screen-sub">Optional but recommended. The AI interviewer will tailor follow-up questions based on your experience.</div>
+      <input type="file" id="resume-input" accept=".pdf,.doc,.docx" style="display:none" onchange="handleResumeSelect(event)">
+      <div id="upload-zone" class="upload-zone" onclick="document.getElementById('resume-input').click()">
+        <div class="upload-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 5l3-3 3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 11v1a2 2 0 002 2h6a2 2 0 002-2v-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+        <div class="upload-text"><strong>Click to upload</strong> or drag and drop</div>
+        <div class="upload-hint">PDF, DOC or DOCX - max 5MB</div>
+      </div>
+      <div id="upload-ok" style="display:none" class="upload-success">
+        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2 2 4-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="upload-name">resume.pdf uploaded</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="goTo('setup')">Skip for now</button>
+        <button class="btn-primary" onclick="goTo('setup')">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: Permissions -->
+    <div class="screen" id="screen-setup">
+      <div class="screen-title">Set up your environment</div>
+      <div class="screen-sub">Allow microphone and camera access so the AI interviewer can hear your responses.</div>
+      <div class="perm-row">
+        <div class="perm-item">
+          <div class="perm-left">
+            <div class="perm-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="currentColor" stroke-width="1.2"/><path d="M3 8c0 2.761 2.239 5 5 5s5-2.239 5-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M8 13v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><div class="perm-name">Microphone</div><div class="perm-desc">Required - for voice responses</div></div>
+          </div>
+          <button class="perm-btn" id="mic-btn" onclick="grantPerm('mic')">Allow</button>
+        </div>
+        <div class="perm-item">
+          <div class="perm-left">
+            <div class="perm-icon"><svg viewBox="0 0 16 16" fill="none"><rect x="3" y="2" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M6 14h4M8 10v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+            <div><div class="perm-name">Camera</div><div class="perm-desc">Optional - helps with engagement</div></div>
+          </div>
+          <button class="perm-btn" id="cam-btn" onclick="grantPerm('cam')">Allow</button>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="setup-next" disabled onclick="startInterview()">Start interview →</button>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: Interview -->
+    <div class="screen" id="screen-interview" style="padding:1.25rem 1.5rem">
+      <div class="iv-layout">
+        <div class="iv-main">
+          <div class="iv-top-bar">
+            <span class="iv-lang-badge" id="iv-lang-badge">Python</span>
+            <span style="font-size:11px;color:var(--color-text-tertiary);font-family:var(--font-mono)" id="iv-q-counter">Question 1 of 1</span>
+            <div class="iv-timer"><div class="iv-timer-dot"></div><span id="iv-timer">30:00</span></div>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="iv-progress" style="width:0%"></div></div>
+          <div class="q-card">
+            <div class="q-label">Question</div>
+            <div class="q-title" id="iv-q-title">—</div>
+            <div class="q-prompt" id="iv-q-prompt">—</div>
+            <div class="concepts-row" id="iv-concepts"></div>
+          </div>
+          <textarea class="code-area" id="iv-code" placeholder="Write your solution here..."></textarea>
+          <div class="submit-row">
+            <button class="btn-primary" style="flex:1" onclick="submitAnswer()">Submit answer</button>
+          </div>
+        </div>
+        <div class="iv-sidebar">
+          <div class="ai-card">
+            <div class="ai-header">
+              <div class="ai-avatar"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.1"/><path d="M2 12c0-2.761 2.239-5 5-5s5 2.239 5 5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></div>
+              <div><div class="ai-name">Alex - AI Interviewer</div><div class="ai-status" id="ai-status-txt">Thinking...</div></div>
+            </div>
+            <div class="ai-bubble" id="ai-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+          </div>
+          <div class="mic-panel">
+            <div class="mic-wrap">
+              <span class="mic-ring"></span><span class="mic-ring"></span>
+              <button class="mic-btn" id="mic-toggle-btn" onclick="toggleMic()"><svg viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="6" height="9" rx="3" stroke="currentColor" stroke-width="1.4"/><path d="M3 8c0 2.761 2.239 5 5 5s5-2.239 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M8 13v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
+            </div>
+            <div class="mic-status" id="mic-status-text">Click to speak</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 5: Feedback -->
+    <div class="screen" id="screen-feedback">
+      <div class="screen-title">Session complete</div>
+      <div class="screen-sub">Here's your performance summary from this interview session.</div>
+      <div class="feedback-card">
+        <div class="fb-score" id="fb-score">100%</div>
+        <div class="fb-label">Completion rate</div>
+        <div class="fb-row">
+          <div class="fb-stat"><div class="fb-stat-val" id="fb-answered">1</div><div class="fb-stat-lbl">Questions answered</div></div>
+          <div class="fb-stat"><div class="fb-stat-val" id="fb-lang">Python</div><div class="fb-stat-lbl">Language</div></div>
+        </div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px">Tips for next time</div>
+        <div class="tip-item"><div class="tip-dot"></div>Explain your reasoning aloud before writing code — interviewers value your thought process.</div>
+        <div class="tip-item"><div class="tip-dot"></div>Mention edge cases early — it signals real-world thinking.</div>
+        <div class="tip-item"><div class="tip-dot"></div>Ask clarifying questions before diving in.</div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="resetDemo()">← Try another language</button>
+        <button class="btn-primary" onclick="sendPrompt('I just completed the TechScreening demo with ' + selectedLang + '. Can you give me deeper feedback on the ' + selectedLang + ' question?')">Get deeper feedback ↗</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const QUESTIONS = {
+  python: { title:'Find the First Non-Repeating Character', prompt:'Write a function that takes a string and returns the\nfirst non-repeating character. If all characters\nrepeat, return None.\n\nExample:\n  Input:  "swiss"\n  Output: "w"', starter:'def first_non_repeating(s: str):\n    # Your solution here\n    pass', concepts:['Hash maps','O(n) time','String traversal'], opener:"Great, let's get started with Python. Before you write any code - walk me through how you'd approach finding the first non-repeating character in a string. What data structure comes to mind first?" },
+  java:   { title:'Check for Balanced Parentheses', prompt:'Write a function to check if a string containing\n()[]{}  is balanced.\n\nExample:\n  Input:  "{[()]}"\n  Output: true', starter:'import java.util.Deque;\nimport java.util.ArrayDeque;\n\npublic class Solution {\n    public boolean isBalanced(String s) {\n        // Your solution here\n        return false;\n    }\n}', concepts:['Stack / Deque','String handling','OOP structure'], opener:"Good choice - Java. Before coding, tell me: for a balanced parentheses problem, which data structure would you reach for and why?" },
+  cpp:    { title:'Top K Frequent Elements', prompt:'Given an integer array, return the k most\nfrequent elements.\n\nExample:\n  Input:  nums = [1,1,1,2,2,3], k = 2\n  Output: [1, 2]', starter:'#include <vector>\n#include <unordered_map>\n#include <queue>\nusing namespace std;\n\nvector<int> topKFrequent(vector<int>& nums, int k) {\n    // Your solution here\n    return {};\n}', concepts:['unordered_map','priority_queue','Algo optimization'], opener:"C++ - excellent. For Top K Frequent Elements, is your first instinct a brute-force sort, or something more elegant? Talk me through it." },
+  c:      { title:'Implement strcpy', prompt:'Write your own version of the strcpy function.\n\nPrototype:\n  char* my_strcpy(char* dest, const char* src);', starter:'#include <stddef.h>\n\nchar* my_strcpy(char* dest, const char* src) {\n    // Your solution here\n    return dest;\n}', concepts:['Pointers','Strings in C','Null terminator'], opener:"Good, C it is. Implementing strcpy is a classic pointer exercise. Before you write a line - what edge cases would you guard against?" }
+};
+
+let selectedLang = '';
+let timerInterval = null;
+let seconds = 1800;
+let aiTypingTimer = null;
+let recognition = null;
+let recognitionActive = false;
+
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  utterance.onstart = () => {
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Speaking...';
+  };
+  utterance.onend = () => {
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = recognitionActive ? 'Listening...' : 'Click to speak';
+  };
+  window.speechSynthesis.speak(utterance);
+}
+
+function setupSpeechRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Speech recognition not supported';
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  recognition.onstart = () => {
+    recognitionActive = true;
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Listening...';
+    const button = document.getElementById('mic-toggle-btn');
+    if (button) button.classList.add('active');
+  };
+
+  recognition.onend = () => {
+    recognitionActive = false;
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Click to speak';
+    const button = document.getElementById('mic-toggle-btn');
+    if (button) button.classList.remove('active');
+  };
+
+  recognition.onerror = event => {
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Recognition error';
+    console.warn('Speech recognition error', event.error);
+  };
+
+  recognition.onresult = event => {
+    const transcript = event.results[0][0].transcript;
+    const status = document.getElementById('mic-status-text');
+    if (status) status.textContent = 'Received input';
+    handleUserSpeech(transcript);
+  };
+}
+
+function toggleMic() {
+  if (!recognition) setupSpeechRecognition();
+  if (!recognition) return;
+
+  if (recognitionActive) {
+    recognition.stop();
+  } else {
+    try {
+      recognition.start();
+    } catch (err) {
+      console.warn('Speech recognition start error', err);
+    }
+  }
+}
+
+function handleUserSpeech(text) {
+  const bubble = document.getElementById('ai-bubble');
+  const status = document.getElementById('ai-status-txt');
+  if (bubble && status) {
+    bubble.textContent = `You said: "${text}"`;
+    status.textContent = 'Processing your response...';
+  }
+
+  setTimeout(() => {
+    const reply = `Thanks! I heard: ${text}. Great answer. Let's continue with the next part of the question.`;
+    showAITyping(reply);
+  }, 1200);
+}
+
+function selectLang(lang, el) {
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  selectedLang = lang;
+  document.getElementById('lang-next').disabled = false;
+}
+
+function goTo(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screen).classList.add('active');
+  const map = {lang:1, resume:2, setup:3, interview:4, feedback:5};
+  const idx = map[screen];
+  document.querySelectorAll('.ts-step').forEach((s, i) => {
+    s.classList.remove('active','done');
+    if (i + 1 < idx) s.classList.add('done');
+    if (i + 1 === idx) s.classList.add('active');
+  });
+}
+
+function setupUploadHandlers() {
+  const zone = document.getElementById('upload-zone');
+  zone.addEventListener('dragover', event => {
+    event.preventDefault();
+    zone.classList.add('dragover');
+  });
+  zone.addEventListener('dragleave', () => {
+    zone.classList.remove('dragover');
+  });
+  zone.addEventListener('drop', event => {
+    event.preventDefault();
+    zone.classList.remove('dragover');
+    if (event.dataTransfer.files.length) {
+      handleResumeFile(event.dataTransfer.files[0]);
+    }
+  });
+}
+
+function handleResumeSelect(event) {
+  const file = event.target.files[0];
+  if (file) handleResumeFile(file);
+}
+
+function handleResumeFile(file) {
+  const allowedTypes = ['application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+  const maxSize = 5 * 1024 * 1024;
+  if (!allowedTypes.includes(file.type) && !/\.(pdf|docx?|PDF|DOCX?)$/.test(file.name)) {
+    alert('Please upload a valid PDF, DOC, or DOCX file.');
+    return;
+  }
+  if (file.size > maxSize) {
+    alert('File is too large. Please upload a file smaller than 5MB.');
+    return;
+  }
+
+  document.getElementById('upload-zone').style.display = 'none';
+  document.getElementById('upload-ok').style.display = 'flex';
+  document.getElementById('upload-name').textContent = file.name + ' uploaded';
+  document.getElementById('resume-input').value = '';
+}
+
+function grantPerm(type) {
+  const btn = document.getElementById(type + '-btn');
+  btn.textContent = 'Granted';
+  btn.classList.add('granted');
+  const micGranted = document.getElementById('mic-btn').classList.contains('granted');
+  if (micGranted) document.getElementById('setup-next').disabled = false;
+}
+
+function startInterview() {
+  const q = QUESTIONS[selectedLang];
+  const labels = {python:'Python', java:'Java', cpp:'C++', c:'C'};
+  document.getElementById('iv-lang-badge').textContent = labels[selectedLang];
+  document.getElementById('iv-q-title').textContent = q.title;
+  document.getElementById('iv-q-prompt').textContent = q.prompt;
+  document.getElementById('iv-code').value = q.starter;
+  document.getElementById('iv-code').placeholder = 'Write your solution here...';
+  document.getElementById('fb-lang').textContent = labels[selectedLang];
+  const cc = document.getElementById('iv-concepts');
+  cc.innerHTML = q.concepts.map(c => '<span class="concept-pill">' + c + '</span>').join('');
+  goTo('interview');
+  startTimer();
+  showAITyping(q.opener);
+}
+
+function showAITyping(text) {
+  const bubble = document.getElementById('ai-bubble');
+  const status = document.getElementById('ai-status-txt');
+  bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  status.textContent = 'Typing...';
+  clearTimeout(aiTypingTimer);
+  aiTypingTimer = setTimeout(() => {
+    bubble.textContent = text;
+    status.textContent = 'Listening to you';
+    speakText(text);
+  }, 1800);
+}
+
+function submitAnswer() {
+  const code = document.getElementById('iv-code').value.trim();
+  if (code === QUESTIONS[selectedLang].starter.trim() || !code) {
+    showAITyping("I notice you haven't written a solution yet. Take your time - walk me through your thinking even if the code isn't complete.");
+    return;
+  }
+  clearInterval(timerInterval);
+  document.getElementById('iv-progress').style.width = '100%';
+  showAITyping("Good effort! I can see your approach. Let me review this and generate your feedback report...");
+  setTimeout(() => {
+    document.getElementById('fb-score').textContent = '100%';
+    document.getElementById('fb-answered').textContent = '1';
+    goTo('feedback');
+  }, 2200);
+}
+
+function startTimer() {
+  seconds = 1800;
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    seconds--;
+    if (seconds <= 0) { clearInterval(timerInterval); seconds = 0; }
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    document.getElementById('iv-timer').textContent = m + ':' + s;
+    const pct = Math.round(((1800 - seconds) / 1800) * 100);
+    document.getElementById('iv-progress').style.width = pct + '%';
+  }, 1000);
+}
+
+function resetDemo() {
+  clearInterval(timerInterval);
+  selectedLang = '';
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('sel'));
+  document.getElementById('lang-next').disabled = true;
+  document.getElementById('upload-zone').style.display = 'block';
+  document.getElementById('upload-ok').style.display = 'none';
+  document.getElementById('mic-btn').textContent = 'Allow';
+  document.getElementById('mic-btn').classList.remove('granted');
+  document.getElementById('cam-btn').textContent = 'Allow';
+  document.getElementById('cam-btn').classList.remove('granted');
+  document.getElementById('setup-next').disabled = true;
+  goTo('lang');
+}
+
+setupUploadHandlers();
+setupSpeechRecognition();
+</script>
+</body>
+</html>
+
+      <div class="screen" id="screen-resume">
+        <div class="screen-title">Upload your resume</div>
+        <div class="screen-sub">Optional but recommended.</div>
+        <input type="file" id="resume-input" accept=".pdf,.doc,.docx" style="display:none" onchange="handleResumeSelect(event)">
+        <div id="upload-zone" style="border:1px dashed #ccc; border-radius:18px; padding:2rem; text-align:center; cursor:pointer; margin-bottom:1rem" onclick="document.getElementById('resume-input').click()">
+          <div style="font-size:13px; color:var(--color-text-secondary)"><strong>Click to upload</strong> or drag and drop</div>
+          <div style="font-size:11px; color:var(--color-text-tertiary); margin-top:4px">PDF, DOC or DOCX - max 5MB</div>
+        </div>
+        <div id="upload-ok" style="display:none; align-items:center; gap:10px; background:rgba(79,70,229,0.06); border:0.5px solid rgba(79,70,229,0.3); border-radius:18px; padding:10px 14px; margin-bottom:1rem">
+          <span id="upload-name" style="font-size:13px; color:var(--color-text-primary)">resume.pdf uploaded</span>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:auto; padding-top:1.5rem">
+          <button class="btn-ghost" onclick="goTo('setup')">Skip for now</button>
+          <button class="btn-primary" onclick="goTo('setup')">Continue →</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-setup">
+        <div class="screen-title">Ready to start?</div>
+        <div class="screen-sub">Ensure microphone access is enabled for the interview.</div>
+        <div style="display:flex; gap:10px; margin-top:auto; padding-top:1.5rem">
+          <button class="btn-primary" onclick="goTo('interview')">Start interview →</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-interview" style="padding:1.25rem 1.5rem">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:1rem">
+          <span style="font-size:11px; font-family:var(--font-mono); padding:3px 10px; border-radius:20px; background:rgba(79,70,229,0.1); color:#4f46e5">Python</span>
+          <div style="margin-left:auto">
+            <span style="font-size:13px; font-family:var(--font-mono); color:var(--color-text-secondary)"><span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#e24b4a; margin-right:5px"></span><span id="timer">30:00</span></span>
+          </div>
+        </div>
+        <div style="height:3px; background:var(--color-border-tertiary); border-radius:2px; margin-bottom:1rem">
+          <div id="progress-fill" style="height:100%; background:#4f46e5; border-radius:2px; width:0%; transition:width 0.4s"></div>
+        </div>
+        <div style="background:var(--color-background-secondary); border-radius:18px; padding:1.25rem; margin-bottom:1rem">
+          <div style="font-size:14px; font-weight:600; color:var(--color-text-primary); margin-bottom:10px">Find the First Non-Repeating Character</div>
+          <div style="font-size:12px; color:var(--color-text-secondary); line-height:1.65">Write a function that takes a string and returns the first non-repeating character.</div>
+        </div>
+        <textarea id="code-area" style="flex:1; background:var(--color-background-secondary); border-radius:18px; padding:1rem; font-family:var(--font-mono); font-size:12px; color:var(--color-text-secondary); border:0.5px solid var(--color-border-tertiary); resize:none; min-height:150px; line-height:1.6" placeholder="Write your solution here..."></textarea>
+        <div style="display:flex; gap:10px; margin-top:1rem">
+          <button class="btn-primary" style="flex:1" onclick="alert('Submitted!')">Submit answer</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-feedback">
+        <div class="screen-title">Session complete</div>
+        <div class="screen-sub">Great job! Here's your summary.</div>
+        <div style="display:flex; gap:10px; margin-top:auto; padding-top:1.5rem">
+          <button class="btn-primary" onclick="location.reload()">Try again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

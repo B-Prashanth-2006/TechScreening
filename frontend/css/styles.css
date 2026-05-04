@@ -1,0 +1,180 @@
+:root {
+  --font-sans: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-background: #eff4ff;
+  --color-surface: #ffffff;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-tertiary: rgba(15, 23, 42, 0.12);
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-tertiary: #6b7280;
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #f8fafc;
+  --border-radius-lg: 28px;
+  --border-radius-md: 18px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  min-height: 100%;
+  font-family: var(--font-sans);
+  background: radial-gradient(circle at top left, rgba(91, 107, 255, 0.12), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(94, 234, 212, 0.16), transparent 26%), #eef4ff;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: 0.01em;
+}
+
+body {
+  padding: 1.4rem 1.6rem 1.6rem;
+}
+
+.ts {
+  min-height: 520px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 40px 120px rgba(15, 23, 42, 0.08);
+}
+
+.ts-nav {
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  height: 60px;
+  border-bottom: 1px solid var(--color-border-tertiary);
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.ts-logo {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ts-logo-sq {
+  width: 20px;
+  height: 20px;
+  background: #5b6bff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ts-steps {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.ts-step {
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 0.5px solid var(--color-border-tertiary);
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+
+.ts-step.active {
+  background: #5b6bff;
+  color: #fff;
+  border-color: #5b6bff;
+}
+
+.ts-step.done {
+  color: #5b6bff;
+  border-color: #5b6bff;
+}
+
+.ts-body {
+  flex: 1;
+  overflow: auto;
+}
+
+.screen {
+  display: none;
+  padding: 2rem 2.5rem;
+  height: 100%;
+  flex-direction: column;
+}
+
+.screen.active {
+  display: flex;
+}
+
+.screen-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.screen-sub {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-bottom: 1.75rem;
+  line-height: 1.75;
+}
+
+.btn-primary {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: calc(var(--border-radius-md) + 2px);
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  box-shadow: 0 12px 30px rgba(79, 70, 229, 0.16);
+}
+
+.btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 0.5px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  padding: 9px 20px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-ghost:hover {
+  background: var(--color-background-secondary);
+}
